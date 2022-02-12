@@ -29,7 +29,27 @@ const hashPassword = async (password) => {
 }
 
 router.get('/', (req, res, next) => {
-  res.render('register', { title: 'Register', fields: REGISTER_FIELDS });
+  if (req.cookies.connection) {
+    res.redirect('/profile/' + req.cookies.connection)
+  } else {
+    fs.readdir(USERS_PATH, (err, files) => {
+      files = files.map(f => f.replace('.json', ''));
+      res.render('register', { title: "Profile", fields: REGISTER_FIELDS, usersList: files });
+    });
+  }
+});
+
+router.get('/:name', (req, res, next) => {
+  if (!req.cookies.connection) {
+    res.redirect('/profile')
+  } else if (req.params["name"] !== req.cookies.connection) {
+    res.redirect('/profile/' + req.cookies.connection)
+  } else {
+    fs.readFile(`${USERS_PATH}/${req.cookies.connection}.json`, 'utf8', (err, data) => {
+      console.log(err)
+      err ? res.redirect('/profile') : res.render('profile', { title: "Your profile", userData: JSON.parse(data) })
+    });
+  }
 });
 
 router.post('/', async (req, res, next) => {
@@ -39,9 +59,20 @@ router.post('/', async (req, res, next) => {
     if (err) {
       res.send(err.toString());
     } else {
-      res.redirect('/profile')
+      let options = {
+        maxAge: 1000 * 60 * 60,
+        httpOnly: true,
+        signed: false
+      }
+      res.cookie('connection', req.body.name, options);
+      res.status(200).redirect('/profile/' + req.body.name)
     }
   });
 });
+
+router.post('/logout', async (req, res, next) => {
+  res.clearCookie("connection");
+  res.redirect('/profile');
+})
 
 module.exports = router;

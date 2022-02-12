@@ -31,10 +31,17 @@ h1, h2, h3, h4, h5, h6, p, label {
   color: snow;
 }
 
-#mismatch-password-error {
+#mismatch-password-error, #user-already-exists-error {
   display: none;
 }
 
-#mismatch-password-error p {
+#mismatch-password-error p, #user-already-exists-error p {
   color: orange;
 }
+
+#btn-logout {
+  position: absolute;
+  top: 1em;
+  right: 2em;
+}
+
