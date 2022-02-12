@@ -1,10 +1,8 @@
 var express = require('express');
-const fs = require("fs");
-const bcrypt = require("bcrypt")
 var router = express.Router();
-
-const DATA_PATH = "./data/";
-const USERS_PATH = DATA_PATH + "users/";
+const fs = require("fs");
+const bcrypt = require("bcrypt");
+const PATH = require("../config/path");
 
 const LOGIN_FIELDS = [
   { type: "text", name: "name", label: "Name", required: true },
@@ -16,7 +14,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-  fs.readFile(`${USERS_PATH}/${req.body.name}.json`, 'utf8', async (err, data) => {
+  fs.readFile(`${PATH.USERS_PATH}/${req.body.name}.json`, 'utf8', async (err, data) => {
     if (err) {
       res.render('login', { title: "Login", fields: LOGIN_FIELDS, errorMessage: true })
     } else {

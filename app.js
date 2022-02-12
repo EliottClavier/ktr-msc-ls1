@@ -8,10 +8,12 @@ var indexRouter = require('./routes/index');
 var profileRouter = require('./routes/profile');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
+var libraryRouter = require('./routes/library');
 const fs = require("fs");
 
 const DATA_PATH = "./data/";
 const USERS_PATH = DATA_PATH + "users/";
+const BUSINESS_CARDS_PATH = DATA_PATH + "business-cards/";
 
 var app = express();
 
@@ -29,6 +31,7 @@ app.use('/', indexRouter);
 app.use('/profile', profileRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/library', libraryRouter);
 
 // Create folders for persisting datas
 if (!fs.existsSync(DATA_PATH)){
@@ -36,6 +39,9 @@ if (!fs.existsSync(DATA_PATH)){
 }
 if (!fs.existsSync(USERS_PATH)){
   fs.mkdirSync(USERS_PATH);
+}
+if (!fs.existsSync(BUSINESS_CARDS_PATH)){
+  fs.mkdirSync(BUSINESS_CARDS_PATH);
 }
 
 // catch 404 and forward to error handler

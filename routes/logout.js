@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.post('/', async (req, res, next) => {
   res.clearCookie("connection");
-  res.redirect('/profile');
+  res.redirect('/login');
 })
 
 module.exports = router;

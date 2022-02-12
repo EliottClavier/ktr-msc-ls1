@@ -2,9 +2,8 @@ var express = require('express');
 var router = express.Router();
 const fs = require("fs");
 const bcrypt = require('bcrypt');
-
-const DATA_PATH = "./data/";
-const USERS_PATH = DATA_PATH + "users/";
+const PATH = require("../config/path");
+const uuid = require("uuid");
 
 const REGISTER_FIELDS = [
   {
@@ -32,7 +31,7 @@ router.get('/', (req, res, next) => {
   if (req.cookies.connection) {
     res.redirect('/profile/' + req.cookies.connection)
   } else {
-    fs.readdir(USERS_PATH, (err, files) => {
+    fs.readdir(PATH.USERS_PATH, (err, files) => {
       files = files.map(f => f.replace('.json', ''));
       res.render('register', { title: "Profile", fields: REGISTER_FIELDS, usersList: files });
     });
@@ -41,33 +40,72 @@ router.get('/', (req, res, next) => {
 
 router.get('/:name', (req, res, next) => {
   if (!req.cookies.connection) {
-    res.redirect('/profile')
+    res.redirect('/login')
   } else if (req.params["name"] !== req.cookies.connection) {
     res.redirect('/profile/' + req.cookies.connection)
   } else {
-    fs.readFile(`${USERS_PATH}/${req.cookies.connection}.json`, 'utf8', (err, data) => {
-      console.log(err)
-      err ? res.redirect('/profile') : res.render('profile', { title: "Your profile", userData: JSON.parse(data) })
+    fs.readFile(`${PATH.USERS_PATH}/${req.cookies.connection}.json`, 'utf8', (err, data) => {
+      if (err) {
+        res.redirect('/login');
+      } else {
+        data = JSON.parse(data);
+        data.businessCards = data.businessCards.map(bc => JSON.parse(fs.readFileSync(`${PATH.BUSINESS_CARDS_PATH}${bc}`)));
+        res.render('profile', { title: "Your profile", username: req.cookies.connection, userData: data })
+      }
     });
   }
 });
 
 router.post('/', async (req, res, next) => {
-  req.body.confirmPassword && (delete req.body.confirmPassword);
-  req.body.password = await hashPassword(req.body.password);
-  fs.writeFile(USERS_PATH + req.body.name + ".json", JSON.stringify(req.body, null, '\t'), (err) => {
+  let ownBusinessCard = {
+    name: req.body.name,
+    companyName: req.body.companyName,
+    mail: req.body.mail,
+    phoneNumber: req.body.phoneNumber
+  }
+
+  let id = uuid.v4();
+  fs.writeFile(PATH.BUSINESS_CARDS_PATH + id + ".json", JSON.stringify(ownBusinessCard, null, '\t'), async (err) => {
     if (err) {
-      res.send(err.toString());
+      res.send(err.toString())
     } else {
-      let options = {
-        maxAge: 1000 * 60 * 60,
-        httpOnly: true,
-        signed: false
+      let userProfile = {
+        password: await hashPassword(req.body.password),
+        personnalBusinessCard: `${id}.json`,
+        businessCards: [],
       }
-      res.cookie('connection', req.body.name, options);
-      res.status(200).redirect('/profile/' + req.body.name)
+
+      fs.writeFile(PATH.USERS_PATH + req.body.name + ".json", JSON.stringify(userProfile, null, '\t'), (errScope) => {
+        if (errScope) {
+          res.send(errScope.toString());
+        } else {
+          let options = {
+            maxAge: 1000 * 60 * 60,
+            httpOnly: true,
+            signed: false
+          }
+          res.cookie('connection', req.body.name, options);
+          res.status(200).redirect('/profile/' + req.body.name)
+        }
+      });
     }
   });
+  // req.body.confirmPassword && (delete req.body.confirmPassword);
+  // req.body.password = await hashPassword(req.body.password);
+  // req.body["businessCards"] = [];
+  // fs.writeFile(PATH.USERS_PATH + req.body.name + ".json", JSON.stringify(req.body, null, '\t'), (err) => {
+  //   if (err) {
+  //     res.send(err.toString());
+  //   } else {
+  //     let options = {
+  //       maxAge: 1000 * 60 * 60,
+  //       httpOnly: true,
+  //       signed: false
+  //     }
+  //     res.cookie('connection', req.body.name, options);
+  //     res.status(200).redirect('/profile/' + req.body.name)
+  //   }
+  // });
 });
 
 router.post('/logout', async (req, res, next) => {
