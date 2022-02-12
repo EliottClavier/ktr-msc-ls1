@@ -1,8 +1,32 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-a {
-  color: #00B7FF;
+body {
+  min-height: 100vh;
+  background: #141416;
+}
+
+h1, h2, h3, h4, h5, h6, h7, p, label {
+  color: snow;
+}
+
+.custom-input {
+  background: #232226;
+  color: snow;
+  border: 0;
+  border-radius: 10px;
+  padding: 1em;
+}
+
+.custom-input:focus {
+  background: #232226;
+  border: 0;
+  color: snow;
+  caret-color: snow;
+}
+
+.custom-hr {
+  color: snow;
 }
