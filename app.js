@@ -6,6 +6,10 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var profileRouter = require('./routes/profile');
+const fs = require("fs");
+
+const DATA_PATH = "./data/";
+const USERS_PATH = DATA_PATH + "users/";
 
 var app = express();
 
@@ -21,6 +25,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/profile', profileRouter);
+
+// Create folders for persisting datas
+if (!fs.existsSync(DATA_PATH)){
+  fs.mkdirSync(DATA_PATH);
+}
+if (!fs.existsSync(USERS_PATH)){
+  fs.mkdirSync(USERS_PATH);
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
