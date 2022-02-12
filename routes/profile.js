@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const fs = require("fs");
+const bcrypt = require('bcrypt');
 
 const DATA_PATH = "./data/";
 const USERS_PATH = DATA_PATH + "users/";
@@ -20,16 +21,27 @@ const REGISTER_FIELDS = [
       { type: "password", name: "confirmPassword", label: "Confirm password", required: true, minlength: 8 },
     ],
   },
-]
+];
 
-router.get('/', function(req, res, next) {
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10)
+  return await bcrypt.hash(password, salt);
+}
+
+router.get('/', (req, res, next) => {
   res.render('register', { title: 'Register', fields: REGISTER_FIELDS });
 });
 
-router.post('/', function(req, res, next) {
-  fs.writeFile(USERS_PATH + req.body.name + ".json", JSON.stringify(req.body, null, '\t'), (err) =>
-    err ? res.send(err.toString()) : res.status(200).redirect('/profile')
-  );
+router.post('/', async (req, res, next) => {
+  req.body.confirmPassword && (delete req.body.confirmPassword);
+  req.body.password = await hashPassword(req.body.password);
+  fs.writeFile(USERS_PATH + req.body.name + ".json", JSON.stringify(req.body, null, '\t'), (err) => {
+    if (err) {
+      res.send(err.toString());
+    } else {
+      res.redirect('/profile')
+    }
+  });
 });
 
 module.exports = router;
