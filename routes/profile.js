@@ -6,10 +6,20 @@ const DATA_PATH = "./data/";
 const USERS_PATH = DATA_PATH + "users/";
 
 const REGISTER_FIELDS = [
-  { type: "text", name: "name", label: "Name", required: true },
-  { type: "text", name: "companyName", label: "Company name", required: false },
+  {
+    split: [
+      { type: "text", name: "name", label: "Name", required: true },
+      { type: "text", name: "companyName", label: "Company name", required: false },
+    ],
+  },
   { type: "email", name: "mail", label: "Email address", required: false },
   { type: "tel", name: "phoneNumber", label: "Telephone number", required: false, pattern: "[0-9]{10}" },
+  {
+    split: [
+      { type: "password", name: "password", label: "Password", required: true, minlength: 8 },
+      { type: "password", name: "confirmPassword", label: "Confirm password", required: true, minlength: 8 },
+    ],
+  },
 ]
 
 router.get('/', function(req, res, next) {

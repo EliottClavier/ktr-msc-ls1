@@ -12,17 +12,39 @@
                 <hr class="custom-hr">
                 <form method="POST" action="/profile">
                     <% fields.forEach(field => { %>
-                        <div class="form-group my-4">
-                            <label for="<%= field.name %>"><%= field.label %></label>
-                            <input
+                        <% if (field.split) { %>
+                            <div class="row">
+                                <% field.split.forEach((subfield) => { %>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="<%= subfield.name %>"><%= subfield.label %></label>
+                                            <input
+                                                type="<%= subfield.type %>"
+                                                class="form-control custom-input shadow-none"
+                                                name="<%= subfield.name %>"
+                                                id="<%= subfield.name %>"
+                                                <%= subfield.required && (`required`) %>
+                                                <%= subfield.minlength && (`minlength=${ subfield.minlength }`) %>
+                                                <%= subfield.pattern && (`pattern=${ subfield.pattern}`) %>
+                                            />
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="form-group my-4">
+                                <label for="<%= field.name %>"><%= field.label %></label>
+                                <input
                                     type="<%= field.type %>"
                                     class="form-control custom-input shadow-none"
                                     name="<%= field.name %>"
                                     id="<%= field.name %>"
                                     <%= field.required && (`required`) %>
+                                    <%= field.minlength && (`minlength=${ field.minlength }`) %>
                                     <%= field.pattern && (`pattern=${field.pattern}`) %>
-                            />
-                        </div>
+                                />
+                            </div>
+                        <% } %>
                     <% }); %>
                     <div class="text-center mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">Register</button>
