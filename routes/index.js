@@ -5,7 +5,7 @@ router.get('/', (req, res, next) => {
   if (req.cookies && req.cookies.connection) {
     res.redirect('/profile/' + req.cookies.connection)
   } else {
-    res.redirect('/profile');
+    res.redirect('/login');
   }
 });
 

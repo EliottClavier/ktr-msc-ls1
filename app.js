@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var profileRouter = require('./routes/profile');
+var loginRouter = require('./routes/login');
+var logoutRouter = require('./routes/logout');
 const fs = require("fs");
 
 const DATA_PATH = "./data/";
@@ -25,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/profile', profileRouter);
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 
 // Create folders for persisting datas
 if (!fs.existsSync(DATA_PATH)){
