@@ -8,15 +8,59 @@
       .split('=')[1];
   }
 
+  const logout = () => {
+    socket.emit("removeUser", getCookie("connection"));
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/logout", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
+    window.location.href = '/login';
+  }
+
+  const exchange = (emitter, receiver) => {
+    socket.emit('askExchange', [emitter, receiver]);
+  }
+
+  const generateUserItem = (user) => {
+    return `
+        <li>
+            <p>${user.username}<p>
+            <button class="btn btn-primary" onclick="exchange('${CURRENT_SOCKET}', '${user.socketID}')">Exchange</button>
+        </li>
+    `
+  }
+
+  let CURRENT_SOCKET = null;
+
   var socket = io.connect();
 
   socket.emit("addUser", getCookie("connection"));
 
   socket.on('sendUsers', (users) => {
-    console.log(socket.id)
-    console.log(users)
+    CURRENT_SOCKET = socket.id;
     let doc = document.getElementById('users-list');
-    doc.innerText = users.join(', ');
+    doc.innerHTML = users.map(u => {
+      if (u.username !== getCookie("connection")) {
+        return generateUserItem(u)
+      }
+    });
   });
+
+  socket.on('receiveAskExchange', (socketIDS) => {
+    let confirmResult = confirm(`${socketIDS[0]} would like to exchange personal business cards.`);
+    if (confirmResult) {
+      socket.emit("answerTrueExchange", socketIDS)
+    } else {
+      socket.emit("answerFalseExchange", socketIDS)
+    }
+  });
+
+  socket.on('proceedExchange', (data) => {
+    alert(`Exchange made`)
+  })
+
+  socket.on('cancelExchange', (data) => {
+    alert(`${data[1]} cancelled the exchange`)
+  })
 
 </script>

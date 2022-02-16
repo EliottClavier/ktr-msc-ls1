@@ -90,22 +90,6 @@ router.post('/', async (req, res, next) => {
       });
     }
   });
-  // req.body.confirmPassword && (delete req.body.confirmPassword);
-  // req.body.password = await hashPassword(req.body.password);
-  // req.body["businessCards"] = [];
-  // fs.writeFile(PATH.USERS_PATH + req.body.name + ".json", JSON.stringify(req.body, null, '\t'), (err) => {
-  //   if (err) {
-  //     res.send(err.toString());
-  //   } else {
-  //     let options = {
-  //       maxAge: 1000 * 60 * 60,
-  //       httpOnly: true,
-  //       signed: false
-  //     }
-  //     res.cookie('connection', req.body.name, options);
-  //     res.status(200).redirect('/profile/' + req.body.name)
-  //   }
-  // });
 });
 
 router.post('/logout', async (req, res, next) => {
