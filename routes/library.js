@@ -27,13 +27,13 @@ router.post('/', (req, res, next) => {
   let id = uuid.v4();
   fs.writeFile(PATH.BUSINESS_CARDS_PATH + id + ".json", JSON.stringify(req.body, null, '\t'), (err) => {
     if (err) {
-      res.send(err.toString())
+      res.send(err.toString());
     } else {
       let userData = JSON.parse(fs.readFileSync(PATH.USERS_PATH + req.cookies.connection + ".json"));
       if (userData) {
-        userData.businessCards.push(`${id}.json`)
+        userData.businessCards.push(`${id}.json`);
         fs.writeFileSync(PATH.USERS_PATH + req.cookies.connection + ".json", JSON.stringify(userData, null, '\t'));
-        res.status(200).redirect('/profile/' + req.cookies.connection)
+        res.status(200).end();
       } else {
         res.status(404);
       }

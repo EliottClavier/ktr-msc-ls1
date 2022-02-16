@@ -62,11 +62,12 @@
   });
 
   socket.on('proceedExchange', (data) => {
-    alert(`Exchange made`)
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `/profile/exchange/${getUsernameFromSocket(data)}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send();
+    alert(`Exchange made`);
+    location.reload();
   })
 
   socket.on('cancelExchange', (data) => {
