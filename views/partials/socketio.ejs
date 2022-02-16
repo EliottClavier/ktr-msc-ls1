@@ -1,0 +1,22 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+  const getCookie = (name) => {
+    return document.cookie
+      .split('; ')
+      .find(row => row.startsWith(`${name}=`))
+      .split('=')[1];
+  }
+
+  var socket = io.connect();
+
+  socket.emit("addUser", getCookie("connection"));
+
+  socket.on('sendUsers', (users) => {
+    console.log(socket.id)
+    console.log(users)
+    let doc = document.getElementById('users-list');
+    doc.innerText = users.join(', ');
+  });
+
+</script>
