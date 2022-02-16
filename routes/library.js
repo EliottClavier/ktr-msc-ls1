@@ -33,7 +33,7 @@ router.post('/', (req, res, next) => {
       if (userData) {
         userData.businessCards.push(`${id}.json`);
         fs.writeFileSync(PATH.USERS_PATH + req.cookies.connection + ".json", JSON.stringify(userData, null, '\t'));
-        res.status(200).end();
+        res.status(201).redirect('/profile/' + req.cookies.connection);
       } else {
         res.status(404);
       }

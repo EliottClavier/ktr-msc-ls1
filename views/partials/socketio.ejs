@@ -23,10 +23,12 @@
 
   const generateUserItem = (user) => {
     return `
-        <li>
+        <div class="col-6">
             <p>${user.username}<p>
+        </div>
+        <div class="col-5">
             <button class="btn btn-primary" onclick="exchange('${CURRENT_SOCKET}', '${user.socketID}')">Exchange</button>
-        </li>
+        </div>
     `
   }
 
@@ -45,9 +47,13 @@
     USERS = users;
     CURRENT_SOCKET = socket.id;
     let doc = document.getElementById('users-list');
-    doc.innerHTML = users.map(u => {
+    doc.innerHTML = ""
+    users.map(u => {
       if (u.username !== getCookie("connection")) {
-        return generateUserItem(u)
+        let li = document.createElement("li");
+        li.classList = "row justify-content-around align-items-center";
+        li.innerHTML = generateUserItem(u)
+        doc.append(li)
       }
     });
   });

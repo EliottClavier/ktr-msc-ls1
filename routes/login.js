@@ -26,7 +26,7 @@ router.post('/', (req, res, next) => {
         bcrypt.compare(req.body.password, JSON.parse(data).password, (err, r) => {
           if (r) {
             let options = {
-              maxAge: 1000 * 60 * 60,
+              maxAge: 1000 * 60 * 60 * 24,
               httpOnly: false,
               signed: false
             }

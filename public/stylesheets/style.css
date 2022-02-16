@@ -39,19 +39,33 @@ h1, h2, h3, h4, h5, h6, p, label {
   color: orange;
 }
 
-#btn-logout {
-  position: absolute;
-  top: 1em;
-  right: 2em;
-}
-
 #business-cards-wrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
 }
 
+#business-cards-container {
+  margin-right: 25vw;
+}
+
 #users-list {
   list-style: none;
+  padding-left: 1em;
 }
+
+#users-list li p {
+  margin: 0;
+}
+
+#users-container {
+  right: 0;
+  top: 0;
+  margin-left: 25vw;
+  width: 25vw;
+  height: 100vh;
+  position: fixed;
+  background: #232226;
+}
+
 
