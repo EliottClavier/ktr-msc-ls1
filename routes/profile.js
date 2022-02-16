@@ -80,7 +80,7 @@ router.post('/', async (req, res, next) => {
           res.send(errScope.toString());
         } else {
           let options = {
-            maxAge: 1000 * 60 * 60 * 24,
+            maxAge: 1000 * 60 * 60,
             httpOnly: true,
             signed: false
           }

@@ -16,6 +16,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   // If user connected on an other device / browser
+  console.log(socketAPI.USERS)
   if (socketAPI.USERS.some(u => req.body.name === u.username)) {
     res.render('login', { title: "Login", fields: LOGIN_FIELDS, errorMessagePassword: false, errorMessageUserAlreadyConnected: true })
   } else {
@@ -26,7 +27,7 @@ router.post('/', (req, res, next) => {
         bcrypt.compare(req.body.password, JSON.parse(data).password, (err, r) => {
           if (r) {
             let options = {
-              maxAge: 1000 * 60 * 60 * 24,
+              maxAge: 1000 * 60 * 60,
               httpOnly: false,
               signed: false
             }

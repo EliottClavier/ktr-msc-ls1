@@ -59,7 +59,7 @@
   });
 
   socket.on('receiveAskExchange', (socketIDS) => {
-    let confirmResult = confirm(`${socketIDS[0]} would like to exchange personal business cards.`);
+    let confirmResult = confirm(`${getUsernameFromSocket(socketIDS[0])} would like to exchange personal business cards.`);
     if (confirmResult) {
       socket.emit("answerTrueExchange", socketIDS)
     } else {
@@ -68,11 +68,12 @@
   });
 
   socket.on('proceedExchange', (data) => {
+    let username = getUsernameFromSocket(data);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `/profile/exchange/${getUsernameFromSocket(data)}`, true);
+    xhr.open("POST", `/profile/exchange/${username}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send();
-    alert(`Exchange made`);
+    alert(`Exchange made with ${username}.`);
     location.reload();
   })
 
