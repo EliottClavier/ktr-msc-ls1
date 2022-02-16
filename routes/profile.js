@@ -92,6 +92,18 @@ router.post('/', async (req, res, next) => {
   });
 });
 
+router.post('/exchange/:name', async (req, res, next) => {
+  let ownData = JSON.parse(fs.readFileSync(PATH.USERS_PATH + req.cookies.connection + ".json"));
+  let friendData = JSON.parse(fs.readFileSync(PATH.USERS_PATH + req.params["name"] + ".json"));
+  if (ownData && friendData) {
+    ownData.businessCards.push(friendData.personnalBusinessCard);
+    fs.writeFileSync(PATH.USERS_PATH + req.cookies.connection + ".json", JSON.stringify(ownData, null, '\t'));
+    res.status(200).redirect('/profile/' + req.cookies.connection)
+  } else {
+    res.status(404);
+  }
+})
+
 router.post('/logout', async (req, res, next) => {
   res.clearCookie("connection");
   res.redirect('/profile');

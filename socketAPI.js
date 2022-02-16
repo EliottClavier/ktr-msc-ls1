@@ -7,7 +7,6 @@ const socketAPI = {
 io.on("connection", function( socket ) {
   socket.on("addUser", (user) => {
     let foundUser = socketAPI.USERS.findIndex(u => u.username === user);
-    console.log(foundUser)
     if (foundUser < 0) {
       socketAPI.USERS.push({username: user, socketID: socket.id});
     } else {
@@ -26,7 +25,8 @@ io.on("connection", function( socket ) {
   })
 
   socket.on("answerTrueExchange", (data) => {
-    data.forEach(s => io.to(s).emit("proceedExchange"))
+    io.to(data[0]).emit("proceedExchange", data[1]);
+    io.to(data[1]).emit("proceedExchange", data[0]);
   })
 
   socket.on("answerFalseExchange", (data) => {

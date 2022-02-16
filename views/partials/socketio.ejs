@@ -30,6 +30,11 @@
     `
   }
 
+  const getUsernameFromSocket = (socketID) => {
+    return USERS.find(u => u.socketID === socketID).username;
+  }
+
+  let USERS = [];
   let CURRENT_SOCKET = null;
 
   var socket = io.connect();
@@ -37,6 +42,7 @@
   socket.emit("addUser", getCookie("connection"));
 
   socket.on('sendUsers', (users) => {
+    USERS = users;
     CURRENT_SOCKET = socket.id;
     let doc = document.getElementById('users-list');
     doc.innerHTML = users.map(u => {
@@ -57,6 +63,10 @@
 
   socket.on('proceedExchange', (data) => {
     alert(`Exchange made`)
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `/profile/exchange/${getUsernameFromSocket(data)}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
   })
 
   socket.on('cancelExchange', (data) => {
